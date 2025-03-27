@@ -3,10 +3,11 @@ package evaluator
 import (
 	"bufio"
 	"fmt"
-	"github.com/grahms/samoralang/object"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/grahms/samoralang/object"
 )
 
 var builtins = map[string]*object.Builtin{
@@ -105,12 +106,15 @@ var builtins = map[string]*object.Builtin{
 	"removeFile": {Fn: removeFileFunc},
 	"readDir":    {Fn: readDirFunc},
 	"makeDir":    {Fn: makeDirFunc},
+	"random":     {Fn: randomFunc},
 }
 
 func inputFunc(args ...object.Object) object.Object {
-	if len(args) != 0 {
+	if len(args) > 1 {
 		return newError("wrong number of arguments. got=%d, want=0",
 			len(args))
+	} else if len(args) == 1 {
+		fmt.Print(args[0].(*object.String).Value)
 	}
 
 	reader := bufio.NewReader(os.Stdin)
@@ -134,7 +138,7 @@ func printFunc(args ...object.Object) object.Object {
 			fmt.Printf("%s", arg.Inspect())
 		}
 	}
-	return NULL
+	return &object.Integer{Value: 10}
 }
 
 func printlnFunc(args ...object.Object) object.Object {
@@ -187,6 +191,24 @@ func makeDirFunc(args ...object.Object) object.Object {
 	err := os.Mkdir(path, 0755) // Or use os.MkdirAll to create nested directories
 	if err != nil {
 		return newError("failed to create directory: %s", err.Error())
+	}
+	return NULL
+}
+
+func randomFunc(args ...object.Object) object.Object {
+	// fmt.Print("random...")
+	// switch len(args) {
+	// case 1:
+	// 	fmt.Print(1)
+	// 	arg0 := args[0].(*object.Integer)
+	// 	// r := rand.Intn(int(arg0.Value))
+	// 	return &object.Integer{Value: int64(arg0.Value)}
+	// case 2:
+	// 	return &object.Integer{Value: 2}
+	// }
+	// return &object.Integer{Value: rand.Int63()}
+	if len(args) == 1 {
+		return &object.Integer{Value: 10}
 	}
 	return NULL
 }

@@ -1,0 +1,4 @@
+print("Hello, world!")
+let x = random()
+let y = random(10)
+print(x, y)
